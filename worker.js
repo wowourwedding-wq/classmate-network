@@ -174,19 +174,20 @@ async function handleFeed(request, env) {
   const q = url.searchParams.get('q');
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '50', 10), 200);
 
-  // Visibility rules: school sees their own private + country-visible from same country + network-visible from anywhere
-  let where = `mod_status = 'approved' AND (
-    school_id = ? OR
-    (visibility = 'country' AND country = ?) OR
-    visibility = 'network'
+  // Visibility rules: school sees their own private + country-visible from same country + network-visible from anywhere.
+  // All column refs qualified with p. because `country` exists in both papers and schools tables.
+  let where = `p.mod_status = 'approved' AND (
+    p.school_id = ? OR
+    (p.visibility = 'country' AND p.country = ?) OR
+    p.visibility = 'network'
   )`;
   const params = [school.id, country];
 
-  if (subject) { where += ' AND subject = ?'; params.push(subject); }
-  if (level)   { where += ' AND level = ?';   params.push(level); }
-  if (grade)   { where += ' AND grade = ?';   params.push(grade); }
+  if (subject) { where += ' AND p.subject = ?'; params.push(subject); }
+  if (level)   { where += ' AND p.level = ?';   params.push(level); }
+  if (grade)   { where += ' AND p.grade = ?';   params.push(grade); }
   if (q) {
-    where += ' AND (title LIKE ? OR subject LIKE ?)';
+    where += ' AND (p.title LIKE ? OR p.subject LIKE ?)';
     params.push(`%${q}%`, `%${q}%`);
   }
 
