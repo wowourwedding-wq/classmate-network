@@ -1,0 +1,31 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "classmate-network",
+  "main": "worker.js",
+  "compatibility_date": "2026-05-31",
+  "observability": { "enabled": true },
+  "compatibility_flags": ["nodejs_compat"],
+
+  // D1 database — REPLACE database_id after you create the DB
+  // (run: wrangler d1 create classmate-network-db   OR create via dashboard)
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "classmate-network-db",
+      "database_id": "REPLACE_WITH_D1_ID_AFTER_CREATING"
+    }
+  ],
+
+  // R2 bucket for storing PDFs
+  // (run: wrangler r2 bucket create classmate-network-papers   OR create via dashboard)
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "classmate-network-papers"
+    }
+  ]
+
+  // Set ADMIN_PIN as a secret (not in this file):
+  //   wrangler secret put ADMIN_PIN
+  //   OR via dashboard: Workers & Pages → classmate-network → Settings → Variables
+}
